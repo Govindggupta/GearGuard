@@ -50,7 +50,8 @@ export default function DashboardPage() {
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
-                  {user.firstName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}
+                  {user.firstName?.[0]?.toUpperCase() ||
+                    user.email?.[0]?.toUpperCase()}
                 </div>
               )}
               <button
@@ -80,7 +81,9 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Profile Card */}
           <div className="bg-gray-800/50 backdrop-blur-xl rounded-xl border border-gray-700/50 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Profile Information</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Profile Information
+            </h3>
             <div className="space-y-3">
               <div>
                 <p className="text-gray-400 text-sm">Username</p>
@@ -107,7 +110,9 @@ export default function DashboardPage() {
 
           {/* Account Status Card */}
           <div className="bg-gray-800/50 backdrop-blur-xl rounded-xl border border-gray-700/50 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Account Status</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Account Status
+            </h3>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -126,7 +131,9 @@ export default function DashboardPage() {
 
           {/* Quick Actions Card */}
           <div className="bg-gray-800/50 backdrop-blur-xl rounded-xl border border-gray-700/50 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Quick Actions
+            </h3>
             <div className="space-y-3">
               <button className="w-full px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-400 rounded-lg transition-all duration-200 text-left">
                 Edit Profile
@@ -147,4 +154,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

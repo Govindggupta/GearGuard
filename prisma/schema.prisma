@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -14,19 +8,155 @@ datasource db {
 }
 
 enum Role {
-  USER
+  EMPLOYEE
   ADMIN
+  TECHNICIAN
+}
+
+enum MaintenanceFor {
+  EQUIPMENT
+  WORK_CENTER
+}
+
+enum MaintenanceType {
+  CORRECTIVE
+  PREVENTIVE
+}
+
+enum RequestStatus {
+  NEW
+  ASSIGNED
+  IN_PROGRESS
+  REPAIRED
+  SCRAPPED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  email     String   @unique
+  id        String  @id @default(uuid())
+  username  String  @unique
+  email     String  @unique
   firstName String
   lastName  String
   password  String
   avatarURL String?
-  role      Role     @default(USER)
+  role      Role    @default(EMPLOYEE)
+
+  createdRequests  MaintenanceRequest[] @relation("CreatedBy")
+  assignedRequests MaintenanceRequest[] @relation("AssignedTo")
+  teamMemberships  TeamMember[]
+  ownedEquipments  Equipment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id         String  @id @default(uuid())
+  name       String  @unique // IT, Mechanical, Electrical
+  categoryId String?
+
+  category Category?            @relation(fields: [categoryId], references: [id])
+  members  TeamMember[]
+  requests MaintenanceRequest[]
+
+  createdAt DateTime @default(now())
+}
+
+model TeamMember {
+  id     String @id @default(uuid())
+  userId String
+  teamId String
+
+  user User @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id])
+
+  @@unique([userId, teamId])
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String @unique // Computers, Mechanical, Electrical
+
+  equipments          Equipment[]
+  workCenters         WorkCenter[]
+  teams               Team[]
+  maintenanceRequests MaintenanceRequest[]
+}
+
+model Equipment {
+  id            String    @id @default(uuid())
+  name          String
+  serialNumber  String    @unique
+  purchaseDate  DateTime?
+  warrantyUntil DateTime?
+  location      String
+  isScrapped    Boolean   @default(false)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  ownerId String?
+  owner   User?   @relation(fields: [ownerId], references: [id])
+
+  requests MaintenanceRequest[]
+
+  createdAt DateTime @default(now())
+}
+
+model WorkCenter {
+  id       String @id @default(uuid())
+  name     String
+  location String
+  company  String // REQUIRED for work center
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  requests MaintenanceRequest[]
+
+  createdAt DateTime @default(now())
+}
+
+model MaintenanceRequest {
+  id          String  @id @default(uuid())
+  subject     String
+  description String?
+
+  maintenanceFor  MaintenanceFor
+  maintenanceType MaintenanceType
+  status          RequestStatus   @default(NEW)
+
+  requestDate   DateTime  @default(now())
+  scheduledDate DateTime?
+  durationHours Float?
+
+  priority Priority
+
+  createdById String
+  createdBy   User   @relation("CreatedBy", fields: [createdById], references: [id])
+
+  assignedToId String?
+  assignedTo   User?   @relation("AssignedTo", fields: [assignedToId], references: [id])
+
+  teamId String?
+  team   Team?   @relation(fields: [teamId], references: [id])
+
+  equipmentId String?
+  equipment   Equipment? @relation(fields: [equipmentId], references: [id])
+
+  workCenterId String?
+  workCenter   WorkCenter? @relation(fields: [workCenterId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

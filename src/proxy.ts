@@ -7,24 +7,18 @@ export const proxy = async (req: NextRequest) => {
 
   if (
     token &&
-    (url.pathname.startsWith("/signin") ||
-      url.pathname.startsWith("/signup") ||
-      url.pathname.startsWith("/"))
+    (url.pathname.startsWith("/signin") || url.pathname.startsWith("/signup"))
   ) {
-    return NextResponse.redirect(new URL("/feed", req.url));
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   if (url.pathname.startsWith("/admin")) {
     if (!token) {
       return NextResponse.redirect(new URL("/signin"));
     }
-
-    if (token && token.role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/feed", req.url));
-    }
   }
 
-  if (!token && url.pathname.startsWith("/feed/")) {
+  if (!token && url.pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/signin", req.url));
   }
 
@@ -32,5 +26,5 @@ export const proxy = async (req: NextRequest) => {
 };
 
 export const config = {
-  matcher: ["/signin", "/signup", "/", "/feed", "/feed/:path*"],
+  matcher: ["/signin", "/signup", "/", "/dashboard", "/dashboard/:path*"],
 };

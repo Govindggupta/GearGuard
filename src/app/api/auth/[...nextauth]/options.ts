@@ -100,7 +100,7 @@ export const authOptions: NextAuthOptions = {
               email: user.email,
               firstName: firstName || "User",
               lastName,
-              role: "USER",
+              role: "EMPLOYEE",
               avatarURL: user?.image ?? null,
               password: randomPassword,
             },
